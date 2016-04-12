@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+
+	<session-factory>
+		<property name="cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="hibernate.cache.use_second_level_cache">true</property>
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="show_sql">false</property>
+		<property name="hbm2ddl.auto">update</property>
+
+		<mapping class="com.resourcemanagement.entity.UserEntity" />
+		<mapping class="com.resourcemanagement.entity.CompanyEntity" />
+		<mapping class="com.resourcemanagement.entity.PerspectiveEntity" />
+		 <mapping class="com.resourcemanagement.entity.GoalEntity" /> 
+		 <mapping class="com.resourcemanagement.entity.MeasureEntity" />
+	<!-- 	 <mapping class="com.resourcemanagement.entity.MeasureCumulativeEntity" />
+		 <mapping class="com.resourcemanagement.entity.AttachmentEntity" />
+		 <mapping class="com.resourcemanagement.entity.DiscussionEntity" />
+		 <mapping class="com.resourcemanagement.entity.CommentEntity" />
+		 <mapping class="com.resourcemanagement.entity.TeamEntity" />
+		 <mapping class="com.resourcemanagement.entity.ProjectEntity" /> -->
+		<!--
+		<mapping class="com.resourcemanagement.entity.MeasureRateCountEntity" />
+		<mapping class="com.resourcemanagement.entity.MeasureRateEntity" />
+		 -->
+		<mapping class="com.resourcemanagement.entity.ReportToUserEntity" />
+		<!-- 
+		<mapping class="com.resourcemanagement.entity.TeamMeasureEntity" />
+		<mapping class="com.resourcemanagement.entity.UserTeamEntity" />   -->
+
+	</session-factory>
+</hibernate-configuration>

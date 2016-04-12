@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!-- <property name="LOG_HOME" value="/var/log/springsec" /> -->
+  <property name="LOG_HOME" value="${catalina.base}/logs" />
+	<!-- <property name="LOG_HOME" value="E:/logs" /> -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- deny all events with a level below WARN, that is TRACE, DEBUG and INFO-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <!-- <level></level> -->
+        </filter>
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-30.-30thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="everythingAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/all.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Rollover at the beginning of every day. -->
+            <fileNamePattern>${LOG_HOME}/all.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%class{64}:%line]; %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="appAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Rollover at the beginning of every day. -->
+            <fileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%class{64}:%line]; %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="errorOnlyAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <file>${LOG_HOME}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Rollover at the beginning of every day. -->
+            <fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%class{64}:%line]; %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- HIBERNATE FILE APPENDER -->
+    <appender name="hibernateFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/hibernate.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Rollover at the beginning of every day. -->
+            <fileNamePattern>${LOG_HOME}/hibernate.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+            <!-- Approx. 3 months of logs -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-30.-30thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+   <root level="info">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="everythingAppender" />
+        <appender-ref ref="errorOnlyAppender"/>
+    </root>
+
+    <logger name="com.resourcemanagement" level="debug">
+        <appender-ref ref="appAppender" />
+        <appender-ref ref="errorOnlyAppender" />
+    </logger>
+    <logger name="org.springframework" level="error">
+        <appender-ref ref="errorOnlyAppender"/>
+    </logger>
+    <logger name="org.hibernate.SQL" level="ALL" additivity="false">
+        <appender-ref ref="hibernateFileAppender" />
+    </logger>
+</configuration>
