@@ -82,7 +82,7 @@ public class RequestHandler {
 	}
 	*/
 	
-	@RequestMapping(value = "/saveUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/saveUser", method = RequestMethod.POST)
 	public @ResponseBody String saveUser(@RequestBody String data, HttpSession session) {
 			return userServices.saveUser(data,session);
 	}
@@ -110,6 +110,12 @@ public class RequestHandler {
 	@RequestMapping(value = "/getPerspectiveListByCompanyId", method = RequestMethod.GET)
 	public @ResponseBody String getPerspectiveListByCompanyId(@RequestBody String data, HttpSession session) {
 			return userServices.getPerspectiveListByCompanyId(data,session);
+	}
+	
+	
+	@RequestMapping(value = "/getUserListByCompanyId", method = RequestMethod.POST)
+	public @ResponseBody String getUserListByCompanyId(@RequestBody String data, HttpSession session) {
+			return userServices.getUserListByCompanyId(data,session);
 	}
 	
 }

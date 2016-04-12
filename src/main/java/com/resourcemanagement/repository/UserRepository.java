@@ -282,4 +282,32 @@ public class UserRepository implements UserEntityDAO {
 			session.close();
 		}
 	}
+
+	@Override
+	public String getUserListByCompanyId(long companyId) {
+		try {
+			session=sessionFactory.openSession();
+			tx=session.beginTransaction();
+			Criteria criteria = session.createCriteria(UserEntity.class,"user")
+					.createAlias("user.companyEntity", "company")
+			        .add(Restrictions.ne("user.status", StatusUtils.DELETE))
+					.add(Restrictions.eq("company.companyId", companyId));
+			List<Object> result = criteria.list();
+			tx.commit();
+			if (result != null) {
+			    return ResponseHandler.sendResponseWithData(ResponseCode.RECORD_FOUND, true, result);
+			}
+			else{
+			    return ResponseHandler.sendResponse(ResponseCode.RECORD_NOT_FOUND, false);
+			}
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			tx.rollback();
+			e.printStackTrace();
+			return ResponseHandler.sendResponseWithException(ResponseCode.FAILED, false, e.getMessage());
+		}
+		finally{
+			session.close();
+		}
+	}
 }

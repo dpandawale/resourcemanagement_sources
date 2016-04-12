@@ -2,6 +2,7 @@ package com.resourcemanagement.services;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,9 +97,25 @@ public class UserServices {
 			return ResponseHandler.sendResponse(ResponseCode.RECORD_NOT_FOUND, false);
 		}
 		//return "";
-		return userEntityDAO.saveUser(new UserEntity(password,emailId,firstName,lastName,userType,
-				status,  type,  createdAt,  updatedAt, phone,
-		 companyEntity));
+		
+			try {
+				JSONObject json1 = new JSONObject(data);
+				emailId = json1.getString("emailId");
+				password = json1.getString("password");
+				firstName = json1.getString("firstName");
+				lastName = json1.getString("lastName");
+				firstName = json1.getString("firstName");
+				phone=json1.getString("phone");
+				
+				return userEntityDAO.saveUser(new UserEntity(password,emailId,firstName,lastName,userType,
+						status,  type,  createdAt,  updatedAt, phone,
+				 companyEntity));
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			    return ResponseHandler.sendResponseWithException(ResponseCode.FAILED, false, e.getMessage());
+			}
+		
 	}
 /*
 	public String getUserNames(String data, HttpSession session) {
@@ -168,6 +185,10 @@ public class UserServices {
 	public String getPerspectiveListByCompanyId(String data, HttpSession session) {
 		long companyId=1;
 		return userEntityDAO.getPerspectiveListByCompanyId(companyId);
+	}
+	public String getUserListByCompanyId(String data, HttpSession session) {
+		long companyId=1;
+		return userEntityDAO.getUserListByCompanyId(companyId);
 	}
 	
 	

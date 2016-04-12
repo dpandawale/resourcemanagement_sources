@@ -26,4 +26,6 @@ public interface UserEntityDAO {
 
 	String getPerspectiveListByCompanyId(long companyId);
 
+	String getUserListByCompanyId(long companyId);
+
 }
