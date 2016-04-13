@@ -316,8 +316,8 @@ public class UserRepository implements UserEntityDAO {
 		try {
 			session=sessionFactory.openSession();
 			tx=session.beginTransaction();
-			Criteria criteria = session.createCriteria(UserEntity.class)
-					.add(Restrictions.eq("userId", userId))
+			Criteria criteria = session.createCriteria(UserEntity.class,"user")
+					.add(Restrictions.eq("user.userId", userId))
 			        .add(Restrictions.ne("user.status", StatusUtils.DELETE));
 			UserEntity result = (UserEntity) criteria.uniqueResult();
 			tx.commit();
