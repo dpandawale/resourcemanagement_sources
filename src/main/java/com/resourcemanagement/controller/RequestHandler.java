@@ -113,9 +113,15 @@ public class RequestHandler {
 	}
 	
 	
-	@RequestMapping(value = "/getUserListByCompanyId", method = RequestMethod.POST)
+	@RequestMapping(value = "/getUserListByCompanyId", method = RequestMethod.GET)
 	public @ResponseBody String getUserListByCompanyId(@RequestBody String data, HttpSession session) {
 			return userServices.getUserListByCompanyId(data,session);
+	}
+	
+
+	@RequestMapping(value = "/getUserByUserId", method = RequestMethod.POST)
+	public @ResponseBody String getUserByUserId(@RequestBody String data, HttpSession session) {
+			return userServices.getUserByUserId(data,session);
 	}
 	
 }

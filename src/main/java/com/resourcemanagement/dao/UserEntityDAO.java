@@ -28,4 +28,6 @@ public interface UserEntityDAO {
 
 	String getUserListByCompanyId(long companyId);
 
+	String getUserByUserId(Long userId);
+
 }

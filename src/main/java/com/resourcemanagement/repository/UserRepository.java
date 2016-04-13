@@ -310,4 +310,31 @@ public class UserRepository implements UserEntityDAO {
 			session.close();
 		}
 	}
+
+	@Override
+	public String getUserByUserId(Long userId) {
+		try {
+			session=sessionFactory.openSession();
+			tx=session.beginTransaction();
+			Criteria criteria = session.createCriteria(UserEntity.class)
+					.add(Restrictions.eq("userId", userId))
+			        .add(Restrictions.ne("user.status", StatusUtils.DELETE));
+			UserEntity result = (UserEntity) criteria.uniqueResult();
+			tx.commit();
+			if (result != null) {
+			    return ResponseHandler.sendResponseWithData(ResponseCode.RECORD_FOUND, true, result);
+			}
+			else{
+			    return ResponseHandler.sendResponse(ResponseCode.RECORD_NOT_FOUND, false);
+			}
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			tx.rollback();
+			e.printStackTrace();
+			return ResponseHandler.sendResponseWithException(ResponseCode.FAILED, false, e.getMessage());
+		}
+		finally{
+			session.close();
+		}
+	}
 }

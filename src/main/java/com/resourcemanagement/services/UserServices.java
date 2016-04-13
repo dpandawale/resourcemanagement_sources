@@ -2,6 +2,7 @@ package com.resourcemanagement.services;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,6 +190,22 @@ public class UserServices {
 	public String getUserListByCompanyId(String data, HttpSession session) {
 		long companyId=1;
 		return userEntityDAO.getUserListByCompanyId(companyId);
+	}
+	public String getUserByUserId(String data, HttpSession session) {
+		// TODO Auto-generated method stub
+		Long userId=0L;
+		
+		try {
+			JSONObject json1 = new JSONObject(data);
+			userId = Long.parseLong(json1.getString("userId"));
+			return userEntityDAO.getUserByUserId(userId);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ResponseHandler.sendResponseWithException(ResponseCode.FAILED, false, e.getMessage());
+			
+		}
 	}
 	
 	
