@@ -1,6 +1,7 @@
 package com.resourcemanagement.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -25,6 +27,7 @@ import com.resourcemanagement.entity.UserEntity;
 import com.resourcemanagement.response.ResponseCode;
 import com.resourcemanagement.response.ResponseHandler;
 import com.resourcemanagement.result.CommonResult;
+import com.resourcemanagement.result.GoalEntityResult;
 import com.resourcemanagement.result.UserResult;
 import com.resourcemanagement.utils.StatusUtils;
 
@@ -209,22 +212,56 @@ public class UserRepository implements UserEntityDAO {
 	@Override
 	public String getGoalListByPerspectiveId(long perspectiveId) {
 		try {
+			Projection p=Projections.projectionList()
+					  .add(Projections.property("goal.goalId"),"goalId")//i dont need the alias anymore..
+					  .add(Projections.property("goal.goalName"),"goalName")
+					  .add(Projections.property("perspective.perspectiveId"),"perspectiveId")
+						.add(Projections.property("perspective.persp_name"),"perspectiveName");
+					  session = sessionFactory.openSession();        
+					  Criteria criteria = session.createCriteria(GoalEntity.class,"goal")
+					  .add(Restrictions.eq("perspective.perspectiveId", perspectiveId)).setProjection(p)
+					  .setResultTransformer(Transformers.aliasToBean(GoalEntityResult.class))
+
+					  .setFetchMode("perspectiveEntity",FetchMode.JOIN).createAlias("perspectiveEntity","perspective");        
+					  List<GoalEntityResult> GoalEntityResultList =criteria.list();  
+					  for(GoalEntityResult goalEntityResult:GoalEntityResultList)
+					  {
+						  System.out.println(goalEntityResult.getGoalId()+" "+goalEntityResult.getGoalName()+" "+goalEntityResult.getPerspectiveId()+" "+goalEntityResult.getPerspectiveName());
+					  }
+					  
+					  return ResponseHandler.sendResponseWithData(ResponseCode.RECORD_FOUND, true, GoalEntityResultList);
+/*			
 			session=sessionFactory.openSession();
 			tx=session.beginTransaction();
+			Criteria criteria = session.createCriteria(GoalEntity.class);
+			criteria.setProjection(Projections.projectionList()
+					.add(Projections.property("goalName"),"goalName")
+					.add(Projections.property("goalId"),"goalId")
+					.add(Projections.property("perspectiveEntity"),"perspectiveEntity")
+
+					);
+			criteria.setResultTransformer(Transformers.aliasToBean(GoalEntityResult.class));
+			criteria.add(Restrictions.ne("status", 2))
+			.add(Restrictions.eq("perspectiveEntity.perspectiveId",perspectiveId));
+			List<GoalEntityResult> list =criteria.list();
+			
 			Criteria criteria = session.createCriteria(GoalEntity.class,"goal")
 					.createAlias("goal.perspectiveEntity", "perspective")
 					.createAlias("perspective.companyEntity", "company")
 			        .add(Restrictions.ne("goal.status", StatusUtils.DELETE))
 					.add(Restrictions.eq("company.companyId", perspectiveId));
-			List<Object> result = criteria.list();
 			tx.commit();
-			if (result != null) {
-			    return ResponseHandler.sendResponseWithData(ResponseCode.RECORD_FOUND, true, result);
+			if (list != null) {
+				for(GoalEntityResult goalEntityResult:list)
+				{
+					System.out.println(goalEntityResult.getGoalId()+" "+goalEntityResult.getGoalName()+" "+goalEntityResult.getPerspectiveEntity().getPerspectiveId()+" "+goalEntityResult.getPerspectiveName());
+				}
+			    return ResponseHandler.sendResponseWithData(ResponseCode.RECORD_FOUND, true, list);
 			}
 			else{
 			    return ResponseHandler.sendResponse(ResponseCode.RECORD_NOT_FOUND, false);
 			}
-			
+			*/
 		} catch (HibernateException e) {
 			// TODO Auto-generated catch block
 			tx.rollback();
@@ -336,5 +373,34 @@ public class UserRepository implements UserEntityDAO {
 		finally{
 			session.close();
 		}
+	}
+
+	@Override
+	public String getPerspectiveWithGoal(Long perspectiveId) {
+		Session session = sessionFactory.openSession();
+		tx=session.beginTransaction();
+		Criteria criteria = session.createCriteria(PerspectiveEntity.class);
+		criteria.add(Restrictions.eq("perspectiveId", perspectiveId));
+		Criteria goalCriteria=criteria.createCriteria("goalEntity");
+		goalCriteria.add(Restrictions.ne("status", 2));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);//this is for avoiding duplication
+		PerspectiveEntity perspectiveEntity = (PerspectiveEntity) criteria.uniqueResult();
+		tx.commit();
+		if (perspectiveEntity != null) {
+			Long id = perspectiveEntity.getPerspectiveId();
+			String name = perspectiveEntity.getPersp_name();
+			System.out.println(id + " " + name);
+			Set<GoalEntity> list = perspectiveEntity.getGoalEntity();
+			for(GoalEntity goalEntity:list)
+			{
+				System.out.println(goalEntity.getGoalId() + " " + goalEntity.getGoalName());
+			}
+			System.out.println("Done");
+		    return ResponseHandler.sendResponseWithData(ResponseCode.RECORD_FOUND, true, perspectiveEntity);
+		}
+		else{
+		    return ResponseHandler.sendResponse(ResponseCode.RECORD_NOT_FOUND, false);
+		}
+
 	}
 }

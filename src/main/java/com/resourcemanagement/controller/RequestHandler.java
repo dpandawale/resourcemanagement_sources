@@ -124,4 +124,8 @@ public class RequestHandler {
 			return userServices.getUserByUserId(data,session);
 	}
 	
+	@RequestMapping(value = "/getPerspectiveWithGoalListByPerspectiveId", method = RequestMethod.GET)
+	public @ResponseBody String getPerspectiveWithGoal(@RequestBody String data, HttpSession session) {
+			return userServices.getPerspectiveWithGoal(data,session);
+	}
 }

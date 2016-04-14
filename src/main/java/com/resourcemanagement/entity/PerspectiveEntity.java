@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -46,6 +47,8 @@ public class PerspectiveEntity {
 	@Column(name = "pers_order")
 	private int order;
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "perspectiveEntity")
+	private Set<GoalEntity> goalEntity; 
 	
 	 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -59,7 +62,7 @@ public class PerspectiveEntity {
 
     
 	public PerspectiveEntity( String persp_name, String created_at, String updated_at, int status,
-			Integer type, boolean attachment, boolean discussion, int order, CompanyEntity companyEntity) {
+			Integer type, boolean attachment, boolean discussion, int order, CompanyEntity companyEntity,Set<GoalEntity> goalEntity) {
 		super();
 		this.persp_name = persp_name;
 		this.created_at = created_at;
@@ -70,6 +73,7 @@ public class PerspectiveEntity {
 		this.discussion = discussion;
 		this.order = order;
 		this.companyEntity = companyEntity;
+		this.goalEntity=goalEntity;
 	}
 
 
@@ -151,6 +155,16 @@ public class PerspectiveEntity {
 
 	public void setCompanyEntity(CompanyEntity companyEntity) {
 		this.companyEntity = companyEntity;
+	}
+
+
+	public Set<GoalEntity> getGoalEntity() {
+		return goalEntity;
+	}
+
+
+	public void setGoalEntity(Set<GoalEntity> goalEntity) {
+		this.goalEntity = goalEntity;
 	}
 	
     

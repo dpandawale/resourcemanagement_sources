@@ -30,4 +30,6 @@ public interface UserEntityDAO {
 
 	String getUserByUserId(Long userId);
 
+	String getPerspectiveWithGoal(Long perspectiveId);
+
 }

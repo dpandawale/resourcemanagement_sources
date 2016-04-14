@@ -3,6 +3,7 @@ package com.resourcemanagement.entity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -43,10 +44,10 @@ public class GoalEntity {
 	@Column(name = "discussion", nullable = false)
 	private boolean discussion;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="perspective_id",insertable=true, updatable=true,nullable=false)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name="perspective_id",insertable=true, updatable=true,nullable=false,referencedColumnName="perspective_id")
     private PerspectiveEntity perspectiveEntity;
-
+    
     public GoalEntity()
     {
     	

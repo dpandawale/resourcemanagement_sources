@@ -1,5 +1,7 @@
 package com.resourcemanagement.services;
 
+import java.util.HashSet;
+
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
@@ -152,19 +154,17 @@ public class UserServices {
 	
 		long companyId=1;
 		CompanyEntity companyEntity=companyEntityDAO.getCompanyEntityByCompanyId(companyId);
-		return userEntityDAO.savePerspective(new PerspectiveEntity("Customer","dtw","dte",1,5,false,false,1,companyEntity));
+		return userEntityDAO.savePerspective(new PerspectiveEntity("Customer","dtw","dte",1,5,false,false,1,companyEntity,new HashSet<GoalEntity>()));
 	}
 	public String createGoal(String data, HttpSession session) {
 		// TODO Auto-generated method stub
 		long perspectiveId=1;
-		long companyId=4;
-		CompanyEntity companyEntity=companyEntityDAO.getCompanyEntityByCompanyId(companyId);
 		PerspectiveEntity perspectiveEntity=companyEntityDAO.getPerspectiveEntityByPerspectiveId(perspectiveId);
-		return userEntityDAO.saveGoal(new GoalEntity("testGoal",1,"dt",2,"",false,false,perspectiveEntity));
+		return userEntityDAO.saveGoal(new GoalEntity("testGoal",1,"2015-10-09 19:43:50",2,"",false,false,perspectiveEntity));
 	}
 	public String getGoalListByPerspectiveId(String data, HttpSession session) {
-		// TODO Auto-generated method stub
-		long perspectiveId=1;
+		
+		Long perspectiveId=1L;
 		return userEntityDAO.getGoalListByPerspectiveId(perspectiveId);
 	}
 	public String createMeasure(String data, HttpSession session) {
@@ -206,6 +206,11 @@ public class UserServices {
 			return ResponseHandler.sendResponseWithException(ResponseCode.FAILED, false, e.getMessage());
 			
 		}
+	}
+	public String getPerspectiveWithGoal(String data, HttpSession session) {
+		
+		Long perspectiveId=Long.parseLong("1");
+		return userEntityDAO.getPerspectiveWithGoal(perspectiveId);
 	}
 	
 	
